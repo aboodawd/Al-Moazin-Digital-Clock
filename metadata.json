@@ -1,0 +1,6 @@
+{
+  "name": "Al-Moazin Digital Clock - المؤذن",
+  "description": "ساعة المؤذن الرقمية العالمية - نظام مواقيت الصلاة والأذان والإقامة والأذكار باستقلالية كاملة لكل دولة ومدينة.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

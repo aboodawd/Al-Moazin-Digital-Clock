@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Al-Moazin Digital Clock - المؤذن</title>
+    <meta name="description" content="ساعة المؤذن الرقمية العالمية - نظام مواقيت الصلاة والأذان والإقامة والأذكار باستقلالية كاملة لكل دولة ومدينة." />
+    <meta property="og:title" content="Al-Moazin Digital Clock - المؤذن" />
+    <meta property="og:description" content="ساعة المؤذن الرقمية العالمية - نظام مواقيت الصلاة والأذان والإقامة والأذكار باستقلالية كاملة لكل دولة ومدينة." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700;900&family=Cairo:wght@400;600;700;800;900&family=Changa:wght@400;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700;900&family=Cairo:wght@400;600;700;800;900&family=Changa:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    </noscript>
+  </head>
+  <body style="background-color: #060B08; color: #E2E8F0; margin: 0;">
+    <div id="root"></div>
+    <script>
+      (function () {
+        var isFileProtocol = window.location.protocol === 'file:';
+        window.__ALMOAZIN_MOUNTED__ = false;
+        function showBootError(msg, isZipHint) {
+          if (window.__ALMOAZIN_MOUNTED__) return;
+          var root = document.getElementById('root');
+          if (!root || root.childElementCount > 0) return;
+          var title = isZipHint
+            ? 'يرجى فك ضغط الملف (Extract All) أولاً'
+            : 'تعذر تشغيل ساعة المؤذن في هذا المتصفح';
+          var buttonsHtml = isZipHint
+            ? '<button onclick="location.reload()" style="background:#0D9488;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer;">إعادة المحاولة</button>'
+            : '<button onclick="location.reload()" style="background:#0D9488;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer;">إعادة تحميل الصفحة</button>' +
+              '<button onclick="try{localStorage.removeItem(\'almoazin_world_state_v4\');localStorage.removeItem(\'almoazin_world_state_v4_backup\');}catch(e){}location.reload();" style="background:#1E293B;color:#FBBF24;border:1px solid #F59E0B;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer;">إعادة ضبط الإعدادات الافتراضية</button>';
+          root.innerHTML =
+            '<div style="min-height:100vh;background:#060B08;color:#E2E8F0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;font-family:Cairo,Segoe UI,Tahoma,sans-serif;direction:rtl;">' +
+              '<h2 style="color:#F59E0B;margin:0 0 12px 0;">' + title + '</h2>' +
+              '<p id="boot-err-msg" style="color:#CBD5E1;font-size:15px;line-height:1.8;max-width:560px;margin:0 0 20px 0;word-break:break-word;"></p>' +
+              '<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">' +
+                buttonsHtml +
+              '</div>' +
+            '</div>';
+          var el = document.getElementById('boot-err-msg');
+          if (el) el.textContent = String(msg || 'Module load failure');
+        }
+        window.addEventListener('error', function (ev) {
+          if (!window.__ALMOAZIN_MOUNTED__) {
+            var target = ev && ev.target;
+            if (target && target.tagName === 'SCRIPT') {
+              var src = String(target.src || '');
+              if (isFileProtocol && (/\/src\/main\.tsx$/i.test(src) || /almoazin-standalone\.js$/i.test(src))) {
+                return;
+              }
+              showBootError('Failed to load script: ' + (src || 'main.tsx'), false);
+            } else if (ev && ev.message) {
+              showBootError(ev.message, false);
+            }
+          }
+        }, true);
+        window.addEventListener('unhandledrejection', function (ev) {
+          if (!window.__ALMOAZIN_MOUNTED__) {
+            var reason = ev && ev.reason;
+            showBootError((reason && reason.message) || String(reason || 'Unhandled promise rejection'), false);
+          }
+        });
+        if (isFileProtocol) {
+          var s1 = document.createElement('script');
+          s1.src = './public/almoazin-standalone.js';
+          s1.onerror = function () {
+            var s2 = document.createElement('script');
+            s2.src = './almoazin-standalone.js';
+            s2.onerror = function () {
+              showBootError(
+                'أنت تفتح ملف index.html من داخل الملف المضغوط مباشرة أو بدون بقية ملفات المجلد. قم بفك ضغط ملف الـ ZIP بالكامل إلى مجلد ثم افتح ملف index.html من داخل المجلد المستخرج.',
+                true
+              );
+            };
+            document.body.appendChild(s2);
+          };
+          document.body.appendChild(s1);
+        }
+        setTimeout(function () {
+          if (!window.__ALMOAZIN_MOUNTED__) {
+            var root = document.getElementById('root');
+            if (root && root.childElementCount === 0) {
+              showBootError('انتهت مهلة تحميل ملفات التطبيق (Module timeout)', false);
+            }
+          }
+        }, 12000);
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
